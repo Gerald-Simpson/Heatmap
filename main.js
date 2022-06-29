@@ -17,6 +17,7 @@ fetch(dataSource)
 				})
 			),
 		];
+		let yearTicks = YEARS.filter((x) => x % 10 === 0);
 		const MONTHS = [
 			"January",
 			"February",
@@ -66,7 +67,7 @@ fetch(dataSource)
 			.domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
 			.range([padding, h + padding]);
 
-		const xAxis = d3.axisBottom(xScale);
+		const xAxis = d3.axisBottom(xScale).tickValues(yearTicks);
 		const yAxis = d3.axisLeft(yScale);
 
 		svg
