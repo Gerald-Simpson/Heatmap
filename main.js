@@ -47,6 +47,50 @@ fetch(dataSource)
 			12: "December",
 		};
 
+		let testColors = [
+			"#a50026",
+			"#d73027",
+			"#f46d43",
+			"#fdae61",
+			"#fee090",
+			"#ffffbf",
+			"#e0f3f8",
+			"#abd9e9",
+			"#74add1",
+			"#4575b4",
+			"#313695",
+		];
+		console.log(d3.schemeCategory10);
+
+		const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+		let COLOR = d3.scaleOrdinal().domain(keys).range(testColors.reverse());
+
+		colorPicker = function (num) {
+			if (num < 2.8) {
+				return 1;
+			} else if (num < 3.9) {
+				return 2;
+			} else if (num < 5) {
+				return 3;
+			} else if (num < 6.1) {
+				return 4;
+			} else if (num < 7.2) {
+				return 5;
+			} else if (num < 8.3) {
+				return 6;
+			} else if (num < 9.5) {
+				return 7;
+			} else if (num < 10.6) {
+				return 8;
+			} else if (num < 11.7) {
+				return 9;
+			} else if (num < 12.8) {
+				return 10;
+			} else {
+				return 11;
+			}
+		};
+
 		const svg = d3
 			.select("#chart")
 			.append("svg")
@@ -87,11 +131,24 @@ fetch(dataSource)
 			.data(jsonData.monthlyVariance)
 			.enter()
 			.append("rect")
-			.attr("x", (d) => {
-				return xScale(d.year);
+			.attr("class", "cell")
+			.attr("data-month", (d) => {
+				return monthKey[d.month];
+			})
+			.attr("data-year", (d) => {
+				return d.year;
+			})
+			.attr("data-temp", (d) => {
+				return jsonData.baseTemperature + d.variance;
 			})
 			.attr("y", (d) => {
 				return yScale(monthKey[d.month]);
+			})
+			.attr("x", (d) => {
+				return xScale(d.year);
+			})
+			.attr("fill", (d) => {
+				return COLOR(colorPicker(jsonData.baseTemperature + d.variance));
 			})
 			.attr("width", xScale.bandwidth())
 			.attr("height", yScale.bandwidth());
