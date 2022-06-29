@@ -6,7 +6,7 @@ let dataSource =
 fetch(dataSource)
 	.then((data) => data.json())
 	.then((jsonData) => {
-		const padding = 55;
+		const padding = 60;
 		const bottomPadding = 150;
 		const w = 1500;
 		const h = 600;
@@ -64,8 +64,8 @@ fetch(dataSource)
 
 		const yScale = d3
 			.scaleBand()
-			.domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
-			.range([padding, h + padding]);
+			.domain(MONTHS)
+			.range([padding + h, padding]);
 
 		const xAxis = d3.axisBottom(xScale).tickValues(yearTicks);
 		const yAxis = d3.axisLeft(yScale);
@@ -73,7 +73,7 @@ fetch(dataSource)
 		svg
 			.append("g")
 			.attr("id", "x-axis")
-			.attr("transform", "translate(0, " + (h - padding) + ")")
+			.attr("transform", "translate(0, " + (h + padding) + ")")
 			.call(xAxis);
 
 		svg
@@ -82,16 +82,16 @@ fetch(dataSource)
 			.attr("transform", "translate(" + padding + ", 0)")
 			.call(yAxis);
 
-		const rect = svg
+		svg
 			.selectAll("rect")
 			.data(jsonData.monthlyVariance)
 			.enter()
 			.append("rect")
-			.attr("x", (d, i) => {
-				xScale(d.year);
+			.attr("x", (d) => {
+				return xScale(d.year);
 			})
-			.attr("y", (d, i) => {
-				yScale(d.month);
+			.attr("y", (d) => {
+				return yScale(monthKey[d.month]);
 			})
 			.attr("width", xScale.bandwidth())
 			.attr("height", yScale.bandwidth());
