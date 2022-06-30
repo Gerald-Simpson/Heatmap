@@ -6,7 +6,7 @@ let dataSource =
 fetch(dataSource)
 	.then((data) => data.json())
 	.then((jsonData) => {
-		const padding = 60;
+		const padding = 90;
 		const bottomPadding = 150;
 		const w = 1500;
 		const h = 600;
@@ -31,7 +31,8 @@ fetch(dataSource)
 			"October",
 			"November",
 			"December",
-		];
+		].reverse();
+
 		const monthKey = {
 			1: "January",
 			2: "February",
@@ -60,7 +61,6 @@ fetch(dataSource)
 			"#4575b4",
 			"#313695",
 		];
-		console.log(d3.schemeCategory10);
 
 		const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 		let COLOR = d3.scaleOrdinal().domain(keys).range(testColors.reverse());
@@ -151,5 +151,58 @@ fetch(dataSource)
 				return COLOR(colorPicker(jsonData.baseTemperature + d.variance));
 			})
 			.attr("width", xScale.bandwidth())
-			.attr("height", yScale.bandwidth());
+			.attr("height", yScale.bandwidth())
+			.on("mouseover", handleMouseOver)
+			.on("mouseout", handleMouseOut);
+
+		function handleMouseOver(event, d) {
+			d3.select(this).attr("stroke", "black");
+			d3.select("#tooltip")
+				.attr("data-year", function () {
+					return d.year;
+				})
+				.style("left", event.pageX + "px")
+				.style("top", event.pageY + "px")
+				.style("opacity", 0.8)
+				.html(
+					d.year +
+						" - " +
+						monthKey[d.month] +
+						"<br>" +
+						Math.round((d.variance + 8.66) * 10) / 10 +
+						"℃<br>" +
+						Math.round(d.variance * 10) / 10 +
+						"℃"
+				);
+		}
+
+		function handleMouseOut(event, d) {
+			d3.select(this).attr("stroke", "none");
+			d3.select("#tooltip").style("opacity", 0);
+		}
+
+		let tooltipDiv = d3
+			.select("#chart")
+			.append("div")
+			.attr("id", "tooltip")
+			.style("opacity", 0);
+
+		svg
+			.append("text")
+			.attr("id", "yLabel")
+			.attr("text-anchor", "end")
+			.attr("x", -padding * 2)
+			.attr("y", 5)
+			.attr("dy", ".5em")
+			.attr("transform", "rotate(-90)")
+			.text("Months");
+
+		svg
+			.append("text")
+			.attr("id", "xLabel")
+			.attr("text-anchor", "end")
+			.attr("x", padding + w / 2)
+			.attr("y", padding + h + 35)
+			.attr("dy", ".5em")
+			.text("Years");
 	});

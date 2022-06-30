@@ -24,7 +24,20 @@ body {
 		font-size: 1.2rem;
 		font-weight: 600;
 	}
-	#chart {
-		background-color: pink;
+}
+
+#chart {
+	padding-left: 20px;
+	#tooltip {
+		background-color: black;
+		border-radius: 5px;
+		color: white;
+		position: absolute;
+		padding: 10px;
+		pointer-events: none;
+		display: flex;
+		flex-direction: column;
+		text-justify: center;
+		text-align: center;
 	}
 }
