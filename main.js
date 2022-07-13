@@ -64,6 +64,7 @@ fetch(dataSource)
 
 		const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 		let COLOR = d3.scaleOrdinal().domain(keys).range(testColors.reverse());
+		let legendSize = 30;
 
 		colorPicker = function (num) {
 			if (num < 2.8) {
@@ -133,7 +134,7 @@ fetch(dataSource)
 			.append("rect")
 			.attr("class", "cell")
 			.attr("data-month", (d) => {
-				return monthKey[d.month];
+				return d.month - 1;
 			})
 			.attr("data-year", (d) => {
 				return d.year;
@@ -205,4 +206,40 @@ fetch(dataSource)
 			.attr("y", padding + h + 35)
 			.attr("dy", ".5em")
 			.text("Years");
+
+		let legend = svg.append("g").attr("id", "legend");
+		legend
+			.selectAll("legendBoxes")
+			.data(keys.slice(1, 10))
+			.enter()
+			.append("rect")
+			.attr("x", (d, i) => padding + (i + 1) * legendSize + 5)
+			.attr("y", h + padding + padding)
+			.attr("width", legendSize)
+			.attr("height", legendSize)
+			.attr("fill", (d) => COLOR(d))
+			.attr("stroke", "black");
+
+		/*legend.selectAll("legendText")
+			.data(keys.slice(1,10))
+			.enter().append("text").attr("class", "legendText").attr("x", )*/
+
+		let legendScale = d3
+			.scaleLinear()
+			.domain([1.7, 13.9])
+			.range([padding, padding + 11 * legendSize]);
+
+		let legendAxis = d3
+			.axisBottom(legendScale)
+			.tickValues([2.8, 3.9, 5.0, 6.1, 7.2, 8.3, 9.5, 10.6, 11.7, 12.8])
+			.tickFormat(d3.format(".1f"));
+
+		svg
+			.append("g")
+			.attr("id", "legendAxis")
+			.attr(
+				"transform",
+				"translate(5, " + (h + padding + padding + legendSize) + ")"
+			)
+			.call(legendAxis);
 	});
